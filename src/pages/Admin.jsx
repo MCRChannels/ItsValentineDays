@@ -328,8 +328,8 @@ const Admin = () => {
                             memories.map(item => (
                                 <div key={item.id} style={{ display: 'flex', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '12px', alignItems: 'center' }}>
                                     <div style={{ width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                        {item.img.includes('mp4') ? (
-                                            <video src={item.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        {['mp4', 'webm', 'ogg', 'mov'].some(ext => item.img.toLowerCase().includes(ext)) ? (
+                                            <video src={item.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
                                         ) : (
                                             <img src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         )}
@@ -349,7 +349,11 @@ const Admin = () => {
                             gallery.map(item => (
                                 <div key={item.id} style={{ display: 'flex', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '12px', alignItems: 'center' }}>
                                     <div style={{ width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                        <img src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        {['mp4', 'webm', 'ogg', 'mov'].some(ext => item.img.toLowerCase().includes(ext)) ? (
+                                            <video src={item.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                                        ) : (
+                                            <img src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        )}
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <p style={{ margin: 0 }}>{item.caption || 'No Caption'}</p>

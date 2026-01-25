@@ -64,7 +64,7 @@ const Gallery = () => {
                             overflow: 'hidden',
                             position: 'relative'
                         }}>
-                            {image.img.endsWith('.mp4') ? (
+                            {['mp4', 'webm', 'ogg', 'mov'].some(ext => image.img.toLowerCase().includes(ext)) ? (
                                 <video
                                     src={image.img}
                                     autoPlay

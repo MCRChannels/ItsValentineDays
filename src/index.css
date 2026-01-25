@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Pattaya&display=swap');
+
+:root {
+  --color-primary: #ff4d6d;
+  --color-secondary: #ff8fa3;
+  --color-accent: #c9184a;
+  --color-background: #fff0f3;
+  --color-text: #590d22;
+  --color-white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Kanit', sans-serif;
+  background: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 100%);
+  color: var(--color-text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Pattaya', sans-serif;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(255, 77, 109, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(45deg, var(--color-accent), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Timer Grid Layout */
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* Mobile: 2 columns */
+  gap: 10px;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.timer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+  min-width: 0;
+  /* Prevents overflow */
+}
+
+/* Responsive Typography and Layout */
+.hero-title {
+  font-size: 2.5rem;
+  /* Mobile default */
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+  line-height: 1.2;
+}
+
+.hero-emoji {
+  font-size: 3rem;
+}
+
+@media (min-width: 768px) {
+  .timer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    /* Tablet: 3 columns */
+    gap: 15px;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+  }
+
+  .hero-emoji {
+    font-size: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .timer-grid {
+    grid-template-columns: repeat(6, 1fr);
+    /* Desktop: 6 columns */
+  }
+
+  .hero-title {
+    font-size: 4rem;
+  }
+}

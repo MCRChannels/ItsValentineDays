@@ -38,7 +38,7 @@ const MemoryCard = ({ memory, isActive }) => {
                 overflow: 'hidden',
                 background: '#ffe5ec'
             }}>
-                {memory.img.endsWith('.mp4') ? (
+                {['mp4', 'webm', 'ogg', 'mov'].some(ext => memory.img.toLowerCase().includes(ext)) ? (
                     <video
                         src={memory.img}
                         autoPlay

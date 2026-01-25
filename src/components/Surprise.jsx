@@ -4,16 +4,13 @@ import confetti from 'canvas-confetti';
 import { Gift, X } from 'lucide-react';
 
 const messages = [
-    "รักนะเจ้าอ้วน! 🐷",
-    "คิดถึงจังเลยยย 💖",
+    "รักนะเบ้บบี้!",
+    "คิดถึงพีพีมั้ยจ้ะ 🫢",
     "ขอบคุณที่อยู่ข้างกันนะ 🌹",
-    "วันนี้น่ารักจัง 😍",
     "ไปกินติมกันมั้ย? 🍦",
     "จุ๊บๆ 😘",
-    "เธอคือของขวัญที่ดีที่สุด 🎁",
-    "อยู่ด้วยกันไปนานๆ นะ 👵👴",
-    "เหนื่อยมั้ย? กอดหน่อย 🫂",
-    "ยิ้มเยอะๆ นะ โลกสดใสเพราะเธอ 🌞"
+    "อยู่ด้วยกันไปนานๆ นะ",
+    "เหนื่อยมั้ย? กอดหน่อย 🫂"
 ];
 
 const Surprise = () => {
@@ -83,33 +80,45 @@ const Surprise = () => {
                         }}
                     >
                         <motion.div
-                            initial={{ scale: 0.5, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1, rotate: [0, -5, 5, 0] }}
-                            exit={{ scale: 0.5, opacity: 0 }}
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="glass-card"
                             style={{
-                                padding: '2rem',
-                                maxWidth: '300px',
+                                padding: '2.5rem',
+                                maxWidth: '360px',
+                                width: '90%',
                                 textAlign: 'center',
                                 position: 'relative',
                                 borderRadius: '24px',
-                                border: '2px solid rgba(255, 255, 255, 0.5)'
+                                background: '#ffffff',
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
+                                border: '1px solid rgba(0,0,0,0.05)'
                             }}
                         >
                             <button
                                 onClick={() => setShowModal(false)}
                                 style={{
-                                    position: 'absolute', top: '10px', right: '10px',
-                                    background: 'none', border: 'none', cursor: 'pointer'
+                                    position: 'absolute', top: '20px', right: '20px',
+                                    background: '#f1f5f9', borderRadius: '50%', width: '32px', height: '32px',
+                                    border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    transition: 'background 0.2s'
                                 }}
                             >
-                                <X size={20} color="#ff4d6d" />
+                                <X size={18} color="#64748b" />
                             </button>
 
-                            <h3 style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--color-primary)' }}>
+                            <h3 style={{
+                                fontSize: '1.5rem',
+                                color: '#1e293b',
+                                fontFamily: 'Kanit, sans-serif',
+                                fontWeight: '500',
+                                lineHeight: '1.5',
+                                margin: '1.5rem 0 0.5rem 0'
+                            }}>
                                 {currentMsg}
                             </h3>
+
                         </motion.div>
                     </motion.div>
                 )}

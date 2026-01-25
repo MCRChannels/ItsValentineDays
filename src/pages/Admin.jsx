@@ -234,11 +234,13 @@ const Admin = () => {
 
     return (
         <div className="container" style={{ paddingTop: '100px', paddingBottom: '4rem', maxWidth: '1200px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1 style={{ color: 'var(--color-accent)', fontFamily: 'Pattaya', fontSize: '2.5rem' }}>Admin Dashboard</h1>
-                <button onClick={fetchData} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                    <RefreshCw color="var(--color-accent)" />
-                </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', marginBottom: '2rem', textAlign: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <h1 style={{ color: 'var(--color-accent)', fontFamily: 'Pattaya', fontSize: 'clamp(2rem, 5vw, 2.5rem)', margin: 0 }}>Admin Dashboard</h1>
+                    <button onClick={fetchData} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}>
+                        <RefreshCw color="var(--color-accent)" size={24} />
+                    </button>
+                </div>
             </div>
 
             {/* TABS */}
@@ -265,7 +267,7 @@ const Admin = () => {
                 ))}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem', alignItems: 'start' }}>
+            <div className="admin-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem', alignItems: 'start' }}>
 
                 {/* LEFT COLUMN: FORM */}
                 <div className="glass-card" style={{ padding: '2rem', position: 'sticky', top: '100px' }}>
@@ -334,10 +336,10 @@ const Admin = () => {
                                             <img src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         )}
                                     </div>
-                                    <div style={{ flex: 1 }}>
-                                        <h4 style={{ color: 'var(--color-accent)', margin: 0 }}>{item.title}</h4>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <h4 style={{ color: 'var(--color-accent)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h4>
                                         <small style={{ color: 'gray' }}>{item.date}</small>
-                                        <p style={{ fontSize: '0.9rem', margin: '0.5rem 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px' }}>{item.description}</p>
+                                        <p style={{ fontSize: '0.9rem', margin: '0.5rem 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.description}</p>
                                     </div>
                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                                         <button onClick={() => handleEditMemory(item)} style={{ padding: '8px', background: '#4cc9f0', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white' }}><Edit size={18} /></button>
@@ -355,8 +357,8 @@ const Admin = () => {
                                             <img src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                         )}
                                     </div>
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0 }}>{item.caption || 'No Caption'}</p>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <p style={{ margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.caption || 'No Caption'}</p>
                                     </div>
                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                                         <button onClick={() => handleEditGallery(item)} style={{ padding: '8px', background: '#4cc9f0', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white' }}><Edit size={18} /></button>
@@ -407,11 +409,23 @@ const Admin = () => {
                     color: var(--color-text);
                 }
                 @media (max-width: 900px) {
-                    .container > div:last-child {
-                        grid-template-columns: 1fr !important;
+                    .container {
+                        width: 100vw !important;
+                        overflow-x: hidden !important;
+                        padding-left: 1rem !important;
+                        padding-right: 1rem !important;
+                    }
+                    .admin-grid-layout {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        width: 100% !important;
+                        gap: 2rem !important;
                     }
                     .glass-card {
                         position: static !important;
+                        padding: 1.5rem !important;
+                        width: 100% !important;
+                        box-sizing: border-box !important;
                     }
                 }
             `}</style>

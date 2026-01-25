@@ -53,13 +53,6 @@ const Home = () => {
                     - ขอบคุณนะที่อยู่ด้วยกันมาตลอด 2 ปี -
                 </p>
 
-                <div className="glass-card" style={{ padding: '2rem', marginTop: '2rem' }}>
-                    <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', marginBottom: '1rem' }}>
-                        เวลาทั้งหมดที่เราอยู่ด้วยกัน
-                    </h2>
-                    <Timer />
-                </div>
-
                 <motion.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{ repeat: Infinity, duration: 2 }}
@@ -69,17 +62,25 @@ const Home = () => {
                 </motion.div>
             </motion.header>
 
-            <MemorySection />
-
-            <h2 style={{
-                textAlign: 'center',
-                fontSize: '3rem',
-                color: 'var(--color-accent)',
-                marginBottom: '3rem',
-                textShadow: '2px 2px 4px rgba(255,255,255,0.5)'
+            {/* Timer Section - Below the fold */}
+            <section style={{
+                minHeight: 'auto', // Allow content to flow naturally
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start', // Start from top
+                paddingTop: '6rem', // Add some space from the top edge
+                paddingBottom: '2rem'
             }}>
-                ----
-            </h2>
+                <div className="glass-card" style={{ padding: '2rem', width: 'fit-content', maxWidth: '90vw' }}>
+                    <h2 style={{ fontSize: '2rem', color: 'var(--color-primary)', marginBottom: '1rem', textAlign: 'center' }}>
+                        เวลาทั้งหมดที่เราอยู่ด้วยกัน
+                    </h2>
+                    <Timer />
+                </div>
+            </section>
+
+            <MemorySection />
 
             <footer style={{
                 textAlign: 'center',

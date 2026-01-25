@@ -8,36 +8,35 @@ const MemoryCard = ({ memory, isActive }) => {
         <motion.div
             animate={{
                 opacity: isActive ? 1 : 0.7,
-                scale: isActive ? 1 : 0.85, // Scale down inactive instead of upscaling active to prevent blur
+                scale: isActive ? 1 : 0.9,
                 y: isActive ? -10 : 0,
                 filter: isActive ? 'none' : 'blur(1px) grayscale(20%)' // Reduced blur
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="glass-card"
             style={{
-                padding: '1.5rem',
                 width: '100%',
                 height: '100%',
-                textAlign: 'center',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
                 border: isActive ? '2px solid rgba(255, 77, 109, 0.6)' : '1px solid rgba(255, 255, 255, 0.3)',
                 boxShadow: isActive
                     ? '0 20px 40px -10px rgba(255, 77, 109, 0.3)'
                     : '0 10px 20px -5px rgba(0,0,0,0.05)',
                 transformOrigin: 'center center',
                 background: isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.5)',
+                borderRadius: '24px', // Rounded corners for the whole card
+                overflow: 'hidden' // Ensure image respects border radius
             }}
         >
+            {/* Image Section - Takes up most space */}
             <div style={{
-                overflow: 'hidden',
-                borderRadius: '12px',
-                marginBottom: '1rem',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                aspectRatio: '3/4', // Enforce portrait ratio
+                position: 'relative',
                 width: '100%',
-                position: 'relative'
+                flex: '1', // Grow to fill available space
+                minHeight: '65%',
+                overflow: 'hidden',
+                background: '#ffe5ec'
             }}>
                 {memory.img.endsWith('.mp4') ? (
                     <video
@@ -57,7 +56,14 @@ const MemoryCard = ({ memory, isActive }) => {
                 )}
             </div>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            {/* Content Section - Bottom padding */}
+            <div style={{
+                padding: '1.25rem 1.5rem',
+                textAlign: 'center',
+                flex: '0 0 auto',
+                background: 'rgba(255,255,255,0.4)', // Slight separation
+                backdropFilter: 'blur(5px)'
+            }}>
                 <h3 style={{
                     color: 'var(--color-accent)',
                     fontSize: '1.8rem',
@@ -70,16 +76,20 @@ const MemoryCard = ({ memory, isActive }) => {
                     color: '#ff8fa3',
                     fontSize: '0.9rem',
                     fontStyle: 'italic',
-                    marginBottom: '0.75rem',
+                    marginBottom: '0.5rem',
                     fontWeight: '500'
                 }}>
                     {memory.date}
                 </p>
                 <p style={{
-                    lineHeight: '1.5',
-                    fontSize: '1rem',
+                    lineHeight: '1.4',
+                    fontSize: '0.95rem',
                     color: 'var(--color-text)',
-                    opacity: 0.9
+                    opacity: 0.9,
+                    display: '-webkit-box',
+                    WebkitLineClamp: '3',
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
                 }}>
                     {memory.description}
                 </p>
@@ -203,7 +213,7 @@ const MemorySection = () => {
                         display: 'flex',
                         overflowX: 'auto',
                         gap: '2rem',
-                        padding: '3rem calc(50% - 160px)', // Centering offset for first/last items
+                        padding: '3rem calc(50% - 170px)', // Centering offset for 340px width
                         scrollSnapType: 'x mandatory',
                         WebkitOverflowScrolling: 'touch',
                         alignItems: 'center',
@@ -225,9 +235,9 @@ const MemorySection = () => {
                             className="memory-card-wrapper"
                             style={{
                                 flex: '0 0 auto',
-                                width: '320px', // Fixed base width
-                                maxWidth: '85vw', // Responsive max width
-                                height: '520px', // Consistent height
+                                width: '340px', // Slightly wider
+                                maxWidth: '85vw',
+                                height: '600px', // Reduced height for better portrait ratio
                                 scrollSnapAlign: 'center',
                                 perspective: '1000px',
                                 zIndex: activeIndex === index ? 10 : 1,

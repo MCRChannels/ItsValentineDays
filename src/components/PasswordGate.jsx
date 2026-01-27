@@ -151,6 +151,7 @@ const PasswordGate = ({ children }) => {
                         <p style={{ color: '#590d22', opacity: 0.9, fontSize: '1.2rem', fontWeight: 'bold', margin: '1rem 0' }}>
                             {HINTS[currentStep]}
                         </p>
+                        <p>Hints: คำตอบไม่ต้องใส่เครื่องหมาย / นะตอนตอบ</p>
                     </div>
 
                     <form onSubmit={handleSubmit}>

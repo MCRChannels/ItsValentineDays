@@ -45,7 +45,7 @@ const Home = () => {
                     สุขสันต์วันวาเลนไทน์นะอ้วน !
                 </h1>
                 <p style={{
-                    fontSize: '1.5rem',
+                    fontSize: '1.3rem',
                     color: 'var(--color-text)',
                     maxWidth: '600px',
                     margin: '0 auto 2rem auto'

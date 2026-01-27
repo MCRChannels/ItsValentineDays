@@ -26,6 +26,33 @@ const Gallery = () => {
         };
 
         fetchGallery();
+
+        const channel = supabase
+            .channel('gallery-channel')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'gallery' },
+                (payload) => {
+                    if (payload.eventType === 'INSERT') {
+                        setGalleryList(prev => {
+                            // If we were showing fallback data (localGalleryImages), user might want to clear it 
+                            // but verifying if the current list is actually local data is tricky without a flag.
+                            // However, assuming Supabase is the source of truth if connected.
+                            const newList = [...prev, payload.new];
+                            return newList.sort((a, b) => a.id - b.id);
+                        });
+                    } else if (payload.eventType === 'UPDATE') {
+                        setGalleryList(prev => prev.map(item => item.id === payload.new.id ? payload.new : item));
+                    } else if (payload.eventType === 'DELETE') {
+                        setGalleryList(prev => prev.filter(item => item.id !== payload.old.id));
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, []);
 
     return (

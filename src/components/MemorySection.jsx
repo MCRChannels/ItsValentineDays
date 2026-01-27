@@ -119,6 +119,30 @@ const MemorySection = () => {
         };
 
         fetchMemories();
+
+        const channel = supabase
+            .channel('memories-channel')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'memories' },
+                (payload) => {
+                    if (payload.eventType === 'INSERT') {
+                        setMemoriesList(prev => {
+                            const newList = [...prev, payload.new];
+                            return newList.sort((a, b) => a.id - b.id);
+                        });
+                    } else if (payload.eventType === 'UPDATE') {
+                        setMemoriesList(prev => prev.map(item => item.id === payload.new.id ? payload.new : item));
+                    } else if (payload.eventType === 'DELETE') {
+                        setMemoriesList(prev => prev.filter(item => item.id !== payload.old.id));
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, []);
 
 
@@ -173,7 +197,7 @@ const MemorySection = () => {
                 textShadow: '2px 2px 4px rgba(255,255,255,0.5)',
                 padding: '0 1rem'
             }}>
-                ในตลอดสองปีเราไปที่ไหนกันบ้างน้า
+                ความทรงจำเล้กๆ ของเรา
             </h2>
 
             <div

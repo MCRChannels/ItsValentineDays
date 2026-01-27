@@ -9,6 +9,21 @@ const Feelings = () => {
 
     useEffect(() => {
         fetchMessages();
+
+        const channel = supabase
+            .channel('messages-channel')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'messages' },
+                (payload) => {
+                    setMessages((prev) => [payload.new, ...prev]);
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, []);
 
     const fetchMessages = async () => {

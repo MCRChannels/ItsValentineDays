@@ -23,8 +23,9 @@ const Admin = () => {
     const [memoryImgPreview, setMemoryImgPreview] = useState('');
 
     const [galleryCaption, setGalleryCaption] = useState('');
-    const [galleryFile, setGalleryFile] = useState(null);
+    const [galleryFiles, setGalleryFiles] = useState([]);
     const [galleryImgPreview, setGalleryImgPreview] = useState('');
+    const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -75,8 +76,9 @@ const Admin = () => {
         setMemoryFile(null);
         setMemoryImgPreview('');
         setGalleryCaption('');
-        setGalleryFile(null);
+        setGalleryFiles([]);
         setGalleryImgPreview('');
+        setUploadProgress({ current: 0, total: 0 });
     };
 
     // --- CRUD MEMORY ---
@@ -142,25 +144,38 @@ const Admin = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            let imgUrl = galleryImgPreview;
-
-            if (galleryFile) {
-                imgUrl = await uploadImage(galleryFile, 'gallery');
-            }
-
-            const payload = {
-                caption: galleryCaption,
-                img: imgUrl
-            };
 
             if (editId) {
+                // --- EDIT MODE: single file ---
+                let imgUrl = galleryImgPreview;
+                if (galleryFiles.length > 0) {
+                    imgUrl = await uploadImage(galleryFiles[0], 'gallery');
+                }
+                const payload = { caption: galleryCaption, img: imgUrl };
                 const { error } = await supabase.from('gallery').update(payload).eq('id', editId);
                 if (error) throw error;
                 alert('Gallery Item Updated!');
             } else {
-                const { error } = await supabase.from('gallery').insert([payload]);
+                // --- ADD MODE: multiple files ---
+                if (galleryFiles.length === 0) {
+                    alert('กรุณาเลือกไฟล์อย่างน้อย 1 ไฟล์');
+                    setLoading(false);
+                    return;
+                }
+
+                const total = galleryFiles.length;
+                setUploadProgress({ current: 0, total });
+                const payloads = [];
+
+                for (let i = 0; i < total; i++) {
+                    setUploadProgress({ current: i + 1, total });
+                    const imgUrl = await uploadImage(galleryFiles[i], 'gallery');
+                    payloads.push({ caption: galleryCaption, img: imgUrl });
+                }
+
+                const { error } = await supabase.from('gallery').insert(payloads);
                 if (error) throw error;
-                alert('Gallery Item Added!');
+                alert(`เพิ่มรูปภาพ ${total} รายการสำเร็จ! 🎉`);
             }
 
             resetForms();
@@ -169,6 +184,7 @@ const Admin = () => {
             alert('Error: ' + error.message);
         } finally {
             setLoading(false);
+            setUploadProgress({ current: 0, total: 0 });
         }
     };
 
@@ -297,15 +313,121 @@ const Admin = () => {
 
                     {activeTab === 'gallery' && (
                         <form onSubmit={handleSubmitGallery} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <input type="text" placeholder="Caption (Optional)" value={galleryCaption} onChange={e => setGalleryCaption(e.target.value)} className="admin-input" />
+                            <input type="text" placeholder="Caption (Optional) — ใช้กับทุกรูป" value={galleryCaption} onChange={e => setGalleryCaption(e.target.value)} className="admin-input" />
 
-                            <label className="file-upload">
-                                <span>{galleryFile ? galleryFile.name : 'Choose Image/Video'}</span>
-                                <input type="file" accept="image/*,video/*" onChange={e => setGalleryFile(e.target.files[0])} hidden />
+                            <label className="file-upload" style={{ position: 'relative' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    📸 {galleryFiles.length > 0
+                                        ? `เลือกแล้ว ${galleryFiles.length} ไฟล์`
+                                        : (editId ? 'Choose Image/Video' : 'เลือกรูปภาพ/วิดีโอ (เลือกได้หลายไฟล์)')}
+                                </span>
+                                <input
+                                    type="file"
+                                    accept="image/*,video/*"
+                                    multiple={!editId}
+                                    onChange={e => setGalleryFiles(Array.from(e.target.files))}
+                                    hidden
+                                />
                             </label>
 
+                            {/* File previews */}
+                            {galleryFiles.length > 0 && (
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))',
+                                    gap: '8px',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto',
+                                    padding: '8px',
+                                    background: 'rgba(255,255,255,0.6)',
+                                    borderRadius: '10px',
+                                    border: '1px solid #ffe5ec'
+                                }}>
+                                    {galleryFiles.map((file, idx) => (
+                                        <div key={idx} style={{
+                                            width: '100%',
+                                            aspectRatio: '1',
+                                            borderRadius: '8px',
+                                            overflow: 'hidden',
+                                            position: 'relative',
+                                            background: '#f0f0f0'
+                                        }}>
+                                            {file.type.startsWith('video/') ? (
+                                                <video
+                                                    src={URL.createObjectURL(file)}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    muted
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt=""
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                />
+                                            )}
+                                            <div style={{
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                background: 'rgba(0,0,0,0.5)',
+                                                color: 'white',
+                                                fontSize: '0.6rem',
+                                                padding: '2px 4px',
+                                                textAlign: 'center',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis'
+                                            }}>
+                                                {file.name}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Upload progress */}
+                            {uploadProgress.total > 0 && (
+                                <div style={{ width: '100%' }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '6px',
+                                        fontSize: '0.85rem',
+                                        color: 'var(--color-primary)',
+                                        fontWeight: 'bold'
+                                    }}>
+                                        <span>⬆️ กำลังอัพโหลด...</span>
+                                        <span>{uploadProgress.current}/{uploadProgress.total}</span>
+                                    </div>
+                                    <div style={{
+                                        width: '100%',
+                                        height: '8px',
+                                        background: '#ffe5ec',
+                                        borderRadius: '10px',
+                                        overflow: 'hidden'
+                                    }}>
+                                        <div style={{
+                                            width: `${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                                            height: '100%',
+                                            background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))',
+                                            borderRadius: '10px',
+                                            transition: 'width 0.3s ease'
+                                        }} />
+                                    </div>
+                                </div>
+                            )}
+
+                            {editId && <div style={{ fontSize: '0.8rem', color: 'gray' }}>* Leave image blank to keep existing</div>}
+
                             <button type="submit" className="admin-btn" disabled={loading}>
-                                {loading ? 'Processing...' : (editId ? 'Update Item' : 'Add to Gallery')}
+                                {loading
+                                    ? (uploadProgress.total > 0
+                                        ? `กำลังอัพโหลด ${uploadProgress.current}/${uploadProgress.total}...`
+                                        : 'Processing...')
+                                    : (editId
+                                        ? 'Update Item'
+                                        : `เพิ่มรูปภาพ${galleryFiles.length > 0 ? ` (${galleryFiles.length} ไฟล์)` : ''}`)}
                             </button>
                             {editId && <button type="button" onClick={resetForms} style={{ background: 'gray', color: 'white', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer' }}>Cancel Edit</button>}
                         </form>
